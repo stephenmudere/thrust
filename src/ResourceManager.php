@@ -5,6 +5,8 @@ namespace BadChoice\Thrust;
 use Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Illuminate\Support\Str;
+
 
 class ResourceManager
 {
@@ -35,24 +37,24 @@ class ResourceManager
 
     public function findResourcesInThrust()
     {
-        $folder          = app_path() . '/' . $this->resourcesFolder;
+        $folder          = module_path('SupportDesk')  . '/' . $this->resourcesFolder;
         $this->resources = collect(scandir($folder))->filter(function ($filename) {
-            return str_contains($filename, '.php');
+            return Str::contains($filename, '.php');
         })->mapWithKeys(function ($filename) {
             $resource = substr($filename, 0, -4);
-            return [str_plural(lcfirst(substr($filename, 0, -4))) => '\\App\\Thrust\\' . $resource];
+            return [Str::plural(lcfirst(substr($filename, 0, -4))) => '\\Modules\\SupportDesk\\Thrust\\' . $resource];
         });
     }
 
     public function findResourcesRecursive(){
-        $folder          = app_path() . '/' . $this->resourcesFolder;
+        $folder          = module_path('SupportDesk') . '/' . $this->resourcesFolder;
         $this->resources = collect($this->scandirRecursive($folder))->filter(function ($filename) {
-            return str_contains($filename, '.php');
+            return Str::contains($filename, '.php');
         })->map(function ($path) use ($folder) {
             $filePath = str_replace($folder.DIRECTORY_SEPARATOR,"",$path);
             $filePath = str_replace("/","\\",$filePath);
             $resourcePath = substr($filePath, 0, -4);
-            return '\\App\\Thrust\\' . $resourcePath;
+            return '\\Modules\\SupportDesk\\Thrust\\' . $resourcePath;
         });
     }
 
@@ -61,7 +63,7 @@ class ResourceManager
         foreach ($iterator as $file) {
             if ($file->isDir()) continue;
             $path = $file->getPathname();
-            $results[str_plural(lcfirst(substr(basename($path), 0, -4)))] = $path;
+            $results[Str::plural(lcfirst(substr(basename($path), 0, -4)))] = $path;
         }
         return $results;
     }
@@ -75,7 +77,7 @@ class ResourceManager
         if ($resourceName instanceof Resource) {
             return $resourceName;
         }
-        $type  = lcfirst(str_plural($resourceName));
+        $type  = lcfirst(Str::plural($resourceName));
         $class = $this->resources[$type];
         return new $class;
     }
@@ -91,6 +93,6 @@ class ResourceManager
         }
         $path = explode('\\', $class);
         $name = array_pop($path);
-        return lcfirst(str_plural($name)) ;
+        return lcfirst(Str::plural($name)) ;
     }
 }
