@@ -1,5 +1,6 @@
-@extends(config('thrust.indexLayout'))
-@section('content')
+@extends($hostname.".la.layouts.app")
+@section('main-content')
+<div class="box box-success">
     <div class="thrust-index-header description">
         <span class="thrust-index-title title">
             @if (isset($parent_id) )
@@ -25,9 +26,10 @@
         {!! (new BadChoice\Thrust\Html\Index($resource))->show() !!}
     </div>
     <div id="results"></div>
+ </div>
 @stop
 
-@section('scripts')
+@section('supporttickets_scripts_custom')
     @parent
     @if ($searchable)
         @include('thrust::components.searchScript', ['resourceName' => $resourceName])
@@ -36,4 +38,15 @@
     @include('thrust::components.js.filters', ['resourceName' => $resourceName])
     @include('thrust::components.js.editInline', ['resourceName' => $resourceName])
 
+@stop
+
+@section('supporttickets_styles')
+<link href="https://fonts.googleapis.com/css?family=Lato:300,500" rel="stylesheet">
+<link href="{{ asset('css/supportdesk.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@stop
+
+@section('supporttickets_scripts_main')
+<script src="{{ asset('js/supportdesk.js') }}"></script>
 @stop

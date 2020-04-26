@@ -15,7 +15,7 @@ class ThrustController extends Controller
     public function index($resourceName)
     {
         $resource = Thrust::make($resourceName);
-        app(ResourceGate::class)->check($resource, 'index');
+        ///app(ResourceGate::class)->check($resource, 'index');
 
         if ($resource::$singleResource) {
             return $this->singleResourceIndex($resourceName, $resource);
